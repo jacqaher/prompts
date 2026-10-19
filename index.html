@@ -1201,7 +1201,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
   }
   .cookie-banner p{
     margin: 0;
@@ -1218,7 +1218,11 @@
     font-family: 'Karla', sans-serif;
     font-weight: 700;
     font-size: 13.5px;
-    padding: 10px 18px;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 20px;
+    line-height: 1;
     border-radius: 999px;
     cursor: pointer;
     flex-shrink: 0;
@@ -2469,8 +2473,8 @@ Important on how to deliver results: Do the simulated conversations yourself, wi
 
 <div class="cookie-banner" id="cookie-banner">
   <div class="cookie-banner-inner">
-    <p>This site uses Google Analytics to see which prompts people find useful. It's off by default — nothing is tracked unless you click Accept.</p>
-    <button class="cookie-accept" id="cookie-accept">Accept</button>
+    <p>This site uses Google Analytics to see which prompts are useful.</p>
+    <button class="cookie-accept" id="cookie-accept" aria-label="Close">&times;</button>
   </div>
 </div>
 
@@ -5692,7 +5696,7 @@ Important on how to deliver results: Do the simulated conversations yourself, wi
           btn.classList.remove('copied');
         }, 1800);
       });
-      // Track which prompt got copied, only fires if GA has been loaded (i.e. consent given)
+      // Track which prompt got copied, only fires if GA has been loaded
       if (window.gtag){
         var card = btn.closest('.card');
         var promptName = card ? card.querySelector('h3').textContent : target.id;
@@ -5701,7 +5705,7 @@ Important on how to deliver results: Do the simulated conversations yourself, wi
     });
   });
 
-  // ---------- Cookie consent + Google Analytics (off until accepted) ----------
+  // ---------- Cookie notice + Google Analytics ----------
   (function(){
     function getCookie(name){
       var match = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
@@ -5726,15 +5730,13 @@ Important on how to deliver results: Do the simulated conversations yourself, wi
     var banner = document.getElementById('cookie-banner');
     var acceptBtn = document.getElementById('cookie-accept');
 
-    if (getCookie('ga_consent') === 'granted'){
-      loadGA();
-    } else {
+    loadGA();
+    if (getCookie('ga_notice') !== 'seen'){
       banner.classList.add('active');
     }
 
     acceptBtn.addEventListener('click', function(){
-      setCookie('ga_consent', 'granted', 365);
-      loadGA();
+      setCookie('ga_notice', 'seen', 365);
       banner.classList.remove('active');
     });
   })();
